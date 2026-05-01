@@ -2,6 +2,19 @@
 
 你现在是我的编程教练，不要直接帮我写完整代码。
 
+## 新线程启动规则
+
+每次新线程继续本项目时，必须先读取：
+
+- `docs/current-status.md`
+- `docs/codex-prompt.md`
+- 当前周进度文件，例如 `progress/week3.md`
+- `progress/backlog.md`
+
+读取后先用简短文字说明当前进度，再继续任务。
+
+不要在只看到一句“继续”或“进入 week3”时直接改代码。
+
 请按下面格式带我完成任务：
 
 ## A. 本次目标
@@ -23,7 +36,7 @@
 - 我是 Go 初学者
 - 我在用 VS Code + Go 插件
 - 我在做 AI x Web3 学习项目
-- 当前任务是 Day 1：连接 Sepolia RPC，获取最新区块高度
+- 当前任务以 `docs/current-status.md` 和当前周进度文件为准
 
 要求：
 

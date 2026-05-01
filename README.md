@@ -85,9 +85,24 @@
 
 第一阶段优先选择 Go，是为了降低同时学习多门语言的负担，先完成最小闭环。后续可以把 Indexer 重写为 Rust，作为阶段增强项。
 
+## 新线程继续项目
+
+如果在新的 Codex / AI 线程中继续本项目，请先让助手读取：
+
+```text
+docs/current-status.md
+docs/codex-prompt.md
+progress/week3.md
+progress/backlog.md
+```
+
+然后再继续当前任务。
+
 ## 当前进度
 
-Week 1 最小闭环已经跑通：
+Week 1 和 Week 2 已完成，当前准备进入 Week 3。
+
+已跑通的最小闭环：
 
 ```text
 Sepolia 真实日志
@@ -104,13 +119,18 @@ Sepolia 真实日志
 - 解析 `topics[0] / topics[1] / topics[2] / data`
 - 将 `Transfer` 事件写入 PostgreSQL
 - 提供 `GET /transfers?address=...` 最小查询 API
+- 支持小区块范围批量日志处理
+- 支持 `FROM_BLOCK` / `TO_BLOCK` 配置扫描区块范围
+- API 支持 `limit` 参数
+- API 支持可选 `contract` 参数
 
 当前暂未完成：
 
 - WebSocket 实时监听新区块
-- 批量历史区块同步
-- 更完整的 API 参数，例如合约地址、区块范围、分页
-- 工程拆分与测试补充
+- 断点续扫
+- 启动流程拆分
+- 更完整的分页和地址分析能力
+- 工程测试补充
 
 ## 建议目录结构
 
@@ -147,6 +167,7 @@ stage1-indexer-go/
 ├── models.go      # TransferEvent 和 JSON response 数据结构
 ├── parser.go      # ERC20 Transfer 日志解析
 ├── indexer.go     # 真实日志查询与日志处理编排
+├── config.go      # 配置读取，例如 FROM_BLOCK / TO_BLOCK
 ├── repository.go  # PostgreSQL 写入和查询
 └── api.go         # HTTP handler
 ```
@@ -200,7 +221,7 @@ cd D:\aiproject\aiWeb3learning\ai-web3-risk-system\stage1-indexer-go
 go run .
 ```
 
-程序会先做一次学习用的启动流程：
+当前程序会先做一次学习用的启动流程：
 
 1. 连接 Sepolia
 2. 查询一条真实历史 `Transfer` 日志
@@ -244,6 +265,7 @@ Invoke-RestMethod "http://localhost:8080/transfers?address=0xEe12063a08584b501d7
 
 ## 当前仓库文档
 
+- [当前状态](D:\aiproject\aiWeb3learning\docs\current-status.md)
 - [项目概览](D:\aiproject\aiWeb3learning\docs\project-overview.md)
 - [系统架构](D:\aiproject\aiWeb3learning\docs\architecture.md)
 - [学习记录](D:\aiproject\aiWeb3learning\docs\learning-log.md)
@@ -251,6 +273,8 @@ Invoke-RestMethod "http://localhost:8080/transfers?address=0xEe12063a08584b501d7
 - [周进度](D:\aiproject\aiWeb3learning\docs\weekly-progress.md)
 - [技术决策](D:\aiproject\aiWeb3learning\docs\decisions.md)
 - [Week 1 任务拆解](D:\aiproject\aiWeb3learning\progress\week1.md)
+- [Week 2 任务拆解](D:\aiproject\aiWeb3learning\progress\week2.md)
+- [Week 3 任务拆解](D:\aiproject\aiWeb3learning\progress\week3.md)
 - [Backlog](D:\aiproject\aiWeb3learning\progress\backlog.md)
 
 ## 如何推进这个项目
@@ -265,9 +289,8 @@ Invoke-RestMethod "http://localhost:8080/transfers?address=0xEe12063a08584b501d7
 
 ## 当前下一步
 
-建议先做 Week 1 收尾：
+进入 Week 3：
 
-- 整理阶段 1 工程结构
-- 将当前集中在 `main.go` 的代码按职责拆分
-- 补充 README 和架构文档
-- 为后续批量同步或 WebSocket 监听做准备
+- 整理启动流程
+- 将“抓日志入库”和“启动 API”拆成两个运行模式
+- 目标形式：`go run . index` 和 `go run . serve`

@@ -90,6 +90,7 @@
 - 验证 `limit=10` 返回 `200`，`limit=abc`、`limit=0`、`limit=1000` 返回 `400`
 - 为 `GET /transfers?address=...` 增加可选 `contract` 参数，用于按 ERC20 合约地址过滤
 - 验证不传 `contract`、传正确 `contract`、传不存在 `contract` 三种情况均符合预期
+- 将区块范围配置读取逻辑拆到 `config.go`，让 `indexer.go` 更专注于日志查询和处理
 
 本周卡点：
 
@@ -107,6 +108,7 @@
 - `http.Error` 返回的文本会成为 HTTP 响应体，所以 `invalid limit` 等错误信息来自 handler 中显式写出的错误文本
 - `contract` 和 `address` 含义不同：`address` 是用户钱包地址，`contract` 是 token 合约地址
 - SQL 中混用 `OR` 和 `AND` 时要用括号明确优先级，例如 `(from_address = $1 OR to_address = $1) AND contract_address = $2`
+- Go 同一个 `package main` 下的多个 `.go` 文件可以共享函数，拆文件主要是为了组织职责，不等于拆 package
 
 下周计划：
 

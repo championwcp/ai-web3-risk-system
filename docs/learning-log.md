@@ -181,6 +181,8 @@
 - 理解了 `address` 和 `contract` 的区别：`address` 对应用户钱包地址，可能出现在 `from_address` 或 `to_address`；`contract` 对应发出 Transfer 日志的 token 合约地址
 - 验证了不传 `contract` 返回所有相关 token 转账，传正确 `contract` 返回该 token 下记录，传不存在 `contract` 返回空数组 `[]`
 - 理解了 SQL 中 `(from_address = $1 OR to_address = $1) AND contract_address = $2` 的括号作用，避免 `AND` 只约束其中一侧条件
+- 将 `LoadBlockRangeFromEnv` 从 `indexer.go` 移动到 `config.go`，理解了同一个 `package main` 下不同文件可以共享函数
+- 理解了小型重构的目标不是改变行为，而是让职责更清楚：`config.go` 负责配置读取，`indexer.go` 负责日志查询和处理
 
 仍然不清楚的点：
 

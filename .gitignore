@@ -1,0 +1,21 @@
+# Local secrets and machine-specific configuration.
+.env
+.env.*
+!.env.example
+
+# Go build outputs and test cache artifacts.
+*.exe
+*.test
+*.out
+coverage.out
+
+# Editor and OS noise.
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+
+# Logs and temporary files.
+*.log
+tmp/
+temp/

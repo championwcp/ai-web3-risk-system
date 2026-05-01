@@ -61,6 +61,7 @@ func QueryTransferEventsByAddress(
 	ctx context.Context,
 	db *sql.DB,
 	address string,
+	limit int,
 ) ([]TransferEvent, error) {
 	query := `
 		SELECT
@@ -74,10 +75,10 @@ func QueryTransferEventsByAddress(
 		FROM transfer_events
 		WHERE from_address = $1 OR to_address = $1
 		ORDER BY block_number DESC
-		LIMIT 20
+		LIMIT $2
 	`
 
-	rows, err := db.QueryContext(ctx, query, address)
+	rows, err := db.QueryContext(ctx, query, address, limit)
 	if err != nil {
 		return nil, err
 	}

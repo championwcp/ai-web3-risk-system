@@ -85,11 +85,15 @@
 - 批量处理结果为 `total=978 succeeded=963 skipped=15 failed=0`
 - 保持现有 API 服务可启动，并继续支持 `GET /transfers?address=...`
 - 将不支持的 Transfer 日志布局归类为 `skipped`，避免误认为程序失败
+- 将日志查询区块范围改为从 `FROM_BLOCK` / `TO_BLOCK` 环境变量读取
+- 为 `GET /transfers?address=...` 增加 `limit` 参数，默认 `20`，合法范围 `1` 到 `100`
+- 验证 `limit=10` 返回 `200`，`limit=abc`、`limit=0`、`limit=1000` 返回 `400`
 
 本周卡点：
 
 - 真实链上日志里，`topics[0]` 相同并不一定代表一定是标准 ERC20 Transfer 布局
 - 部分日志虽然事件签名也是 `Transfer(address,address,uint256)`，但 `data` 长度为 `0`，更像 ERC721 等不同 indexed 布局，需要跳过而不是按失败处理
+- SQL 占位符 `$1`、`$2` 与 `QueryContext(ctx, query, ...)` 中 query 后面的参数列表对应，需要注意和 Go 函数完整参数位置区分
 
 学到的内容：
 
@@ -97,8 +101,10 @@
 - 批量处理需要最小统计信息，否则很难判断到底处理了多少、失败了多少
 - `skipped` 和 `failed` 的含义不同：`skipped` 表示当前阶段不支持但可预期的数据形态，`failed` 表示真正异常
 - Go 里可以用哨兵错误表达一类可识别错误，再用 `%w` 包装上下文，用 `errors.Is` 在外层判断错误类别
+- API handler 负责解析和校验用户输入，repository 只接收已经整理好的查询参数
+- `http.Error` 返回的文本会成为 HTTP 响应体，所以 `invalid limit` 等错误信息来自 handler 中显式写出的错误文本
 
 下周计划：
 
-- 将区块范围从硬编码逐步调整为配置项
+- 继续增强 API 查询能力，但每次只增加一个小参数或一个小规则
 - 继续保持教学优先：每次写入代码前先明确写在哪个文件、为什么写、运行前需要什么环境依赖

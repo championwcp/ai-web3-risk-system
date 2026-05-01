@@ -35,11 +35,14 @@ Week 2 第一阶段已完成。
 - 批量处理结果为 `total=978 succeeded=963 skipped=15 failed=0`
 - 新增 `skipped` 统计，用于区分“不支持的 Transfer 日志布局”和“真正处理失败”
 - 使用 `ErrUnsupportedTransferLog`、`fmt.Errorf("%w", ...)` 和 `errors.Is(...)` 替代字符串匹配错误
+- 已将区块范围从硬编码改为环境变量 `FROM_BLOCK` / `TO_BLOCK`
+- 已为 `GET /transfers?address=...` 增加 `limit` 参数，支持控制返回条数
+- 已验证 `limit=10` 返回 `200`，`limit=abc`、`limit=0`、`limit=1000` 返回 `400`
 
 ## 当前还差
 
-- 将区块范围从代码常量逐步改为配置项
-- 后续再扩展 API 查询条件，例如合约地址、区块范围、分页
+- 后续再扩展 API 查询条件，例如合约地址、区块范围、分页游标
+- 后续考虑把启动时的“抓日志 + API 服务”拆成更清晰的命令或流程
 
 ## 完成标志
 

@@ -74,7 +74,7 @@ func main() {
 		log.Fatal("failed to parse real transfer log for query test:", err)
 	}
 
-	events, err := QueryTransferEventsByAddress(ctx, db, event.FromAddress)
+	events, err := QueryTransferEventsByAddress(ctx, db, event.FromAddress, 20)
 	if err != nil {
 		log.Fatal("failed to query transfer events by address:", err)
 	}

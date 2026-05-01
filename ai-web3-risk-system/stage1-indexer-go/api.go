@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+
+	"strconv"
 )
 
 // TransfersHandler 提供当前最小可用 API：
@@ -16,7 +18,25 @@ func TransfersHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		events, err := QueryTransferEventsByAddress(r.Context(), db, address)
+		limit := 20
+
+		limitStr := r.URL.Query().Get("limit")
+		if limitStr != "" {
+			parsedLimit, err := strconv.Atoi(limitStr)
+			if err != nil {
+				http.Error(w, "invalid limit", http.StatusBadRequest)
+				return
+			}
+
+			if parsedLimit <= 0 || parsedLimit > 100 {
+				http.Error(w, "limit must be between 1 and 100", http.StatusBadRequest)
+				return
+			}
+
+			limit = parsedLimit
+		}
+
+		events, err := QueryTransferEventsByAddress(r.Context(), db, address, limit)
 		if err != nil {
 			http.Error(w, "failed to query transfer events", http.StatusInternalServerError)
 			return

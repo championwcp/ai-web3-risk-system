@@ -165,3 +165,26 @@
 - Go 中配置读取的最小做法，例如从环境变量读取 `FROM_BLOCK` 和 `TO_BLOCK`
 - 不同 token 标准的事件日志结构差异
 - 批量 indexer 后续如何设计断点续扫
+
+### 2026-05-01
+
+本次学到的内容：
+
+- 将日志查询区块范围从硬编码改为环境变量配置：`FROM_BLOCK` 表示起始区块，`TO_BLOCK` 表示结束区块
+- 使用 `os.Getenv` 读取环境变量，并用 `big.Int.SetString(..., 10)` 将字符串区块号转换成大整数
+- 为 API 增加了 `limit` 查询参数：不传时默认 `20`，合法范围为 `1` 到 `100`
+- 使用 `strconv.Atoi` 将 URL query 中的字符串 `limit` 转成整数
+- 理解了 `limit=abc` 返回 `invalid limit`，是因为字符串转整数失败后 handler 调用了 `http.Error`
+- 理解了 `limit=0` 和 `limit=1000` 返回 `limit must be between 1 and 100`，是因为数字虽然能转换，但不符合接口规则
+- 理解了 `QueryContext(ctx, query, address, limit)` 中，SQL 的 `$1`、`$2` 对应的是 `query` 后面的参数列表，即 `address` 和 `limit`
+
+仍然不清楚的点：
+
+- 后续 API 分页是否应该继续使用 `limit + offset`，还是更适合用基于区块号和 log_index 的游标
+- 当前启动流程里同时做“抓日志入库”和“启动 API”，后续可能需要拆成更清晰的运行模式
+
+后续要补课的内容：
+
+- API 分页设计：`limit/offset` 与 cursor 分页的区别
+- Go 项目中配置读取逻辑是否需要从 `indexer.go` 拆出到单独文件
+- 阶段 1 indexer 如何支持断点续扫

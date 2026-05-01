@@ -38,6 +38,8 @@ Week 2 第一阶段已完成。
 - 已将区块范围从硬编码改为环境变量 `FROM_BLOCK` / `TO_BLOCK`
 - 已为 `GET /transfers?address=...` 增加 `limit` 参数，支持控制返回条数
 - 已验证 `limit=10` 返回 `200`，`limit=abc`、`limit=0`、`limit=1000` 返回 `400`
+- 已为 `GET /transfers?address=...` 增加可选 `contract` 参数，支持按 ERC20 合约地址过滤
+- 已验证不传 `contract` 返回正常记录，传正确 `contract` 返回正常记录，传不存在的 `contract` 返回空数组 `[]`
 
 ## 当前还差
 

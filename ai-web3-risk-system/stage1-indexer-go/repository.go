@@ -61,24 +61,49 @@ func QueryTransferEventsByAddress(
 	ctx context.Context,
 	db *sql.DB,
 	address string,
+	contractAddress string,
 	limit int,
 ) ([]TransferEvent, error) {
-	query := `
-		SELECT
-			transaction_hash,
-			log_index,
-			block_number,
-			contract_address,
-			from_address,
-			to_address,
-			value
-		FROM transfer_events
-		WHERE from_address = $1 OR to_address = $1
-		ORDER BY block_number DESC
-		LIMIT $2
-	`
+	var query string
+	var args []interface{}
 
-	rows, err := db.QueryContext(ctx, query, address, limit)
+	// 不传 contract 时保持原查询；传了 contract 时额外限制 token 合约地址。
+	if contractAddress == "" {
+		query = `
+            SELECT
+                transaction_hash,
+                log_index,
+                block_number,
+                contract_address,
+                from_address,
+                to_address,
+                value
+            FROM transfer_events
+            WHERE from_address = $1 OR to_address = $1
+            ORDER BY block_number DESC
+            LIMIT $2
+        `
+		args = []interface{}{address, limit}
+	} else {
+		query = `
+            SELECT
+                transaction_hash,
+                log_index,
+                block_number,
+                contract_address,
+                from_address,
+                to_address,
+                value
+            FROM transfer_events
+            WHERE (from_address = $1 OR to_address = $1)
+              AND contract_address = $2
+            ORDER BY block_number DESC
+            LIMIT $3
+        `
+		args = []interface{}{address, contractAddress, limit}
+	}
+
+	rows, err := db.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}

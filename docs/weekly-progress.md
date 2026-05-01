@@ -88,6 +88,8 @@
 - 将日志查询区块范围改为从 `FROM_BLOCK` / `TO_BLOCK` 环境变量读取
 - 为 `GET /transfers?address=...` 增加 `limit` 参数，默认 `20`，合法范围 `1` 到 `100`
 - 验证 `limit=10` 返回 `200`，`limit=abc`、`limit=0`、`limit=1000` 返回 `400`
+- 为 `GET /transfers?address=...` 增加可选 `contract` 参数，用于按 ERC20 合约地址过滤
+- 验证不传 `contract`、传正确 `contract`、传不存在 `contract` 三种情况均符合预期
 
 本周卡点：
 
@@ -103,6 +105,8 @@
 - Go 里可以用哨兵错误表达一类可识别错误，再用 `%w` 包装上下文，用 `errors.Is` 在外层判断错误类别
 - API handler 负责解析和校验用户输入，repository 只接收已经整理好的查询参数
 - `http.Error` 返回的文本会成为 HTTP 响应体，所以 `invalid limit` 等错误信息来自 handler 中显式写出的错误文本
+- `contract` 和 `address` 含义不同：`address` 是用户钱包地址，`contract` 是 token 合约地址
+- SQL 中混用 `OR` 和 `AND` 时要用括号明确优先级，例如 `(from_address = $1 OR to_address = $1) AND contract_address = $2`
 
 下周计划：
 

@@ -177,6 +177,10 @@
 - 理解了 `limit=abc` 返回 `invalid limit`，是因为字符串转整数失败后 handler 调用了 `http.Error`
 - 理解了 `limit=0` 和 `limit=1000` 返回 `limit must be between 1 and 100`，是因为数字虽然能转换，但不符合接口规则
 - 理解了 `QueryContext(ctx, query, address, limit)` 中，SQL 的 `$1`、`$2` 对应的是 `query` 后面的参数列表，即 `address` 和 `limit`
+- 为转账查询 API 增加了可选 `contract` 参数，用来限制查询某个 ERC20 合约下的转账记录
+- 理解了 `address` 和 `contract` 的区别：`address` 对应用户钱包地址，可能出现在 `from_address` 或 `to_address`；`contract` 对应发出 Transfer 日志的 token 合约地址
+- 验证了不传 `contract` 返回所有相关 token 转账，传正确 `contract` 返回该 token 下记录，传不存在 `contract` 返回空数组 `[]`
+- 理解了 SQL 中 `(from_address = $1 OR to_address = $1) AND contract_address = $2` 的括号作用，避免 `AND` 只约束其中一侧条件
 
 仍然不清楚的点：
 

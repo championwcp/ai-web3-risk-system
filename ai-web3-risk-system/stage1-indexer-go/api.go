@@ -18,6 +18,9 @@ func TransfersHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		// contract 是可选过滤条件；空字符串表示查询该地址相关的所有 token 转账。
+		contractAddress := r.URL.Query().Get("contract")
+
 		limit := 20
 
 		limitStr := r.URL.Query().Get("limit")
@@ -36,7 +39,7 @@ func TransfersHandler(db *sql.DB) http.HandlerFunc {
 			limit = parsedLimit
 		}
 
-		events, err := QueryTransferEventsByAddress(r.Context(), db, address, limit)
+		events, err := QueryTransferEventsByAddress(r.Context(), db, address, contractAddress, limit)
 		if err != nil {
 			http.Error(w, "failed to query transfer events", http.StatusInternalServerError)
 			return
